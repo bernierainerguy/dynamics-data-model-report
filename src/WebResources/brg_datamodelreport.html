@@ -25,7 +25,7 @@
 <body>
   <header class="top">
     <div class="mark">DM</div>
-    <div class="title"><h1>Dynamics Data Model Report</h1><p><span id="environmentName">Dataverse metadata explorer</span> · v<span id="appVersion">1.1.0.11</span></p></div>
+    <div class="title"><h1>Dynamics Data Model Report</h1><p><span id="environmentName">Dataverse metadata explorer</span> · v<span id="appVersion">__APP_VERSION__</span></p></div>
     <div class="actions">
       <button class="btn" id="refreshButton">Refresh</button>
       <button class="btn" id="tableReportButton" disabled>Table report</button>
@@ -77,7 +77,7 @@
   <script>
   (function(){
     "use strict";
-    const apiVersion="v9.2",appVersion="1.1.0.11";
+    const apiVersion="v9.2",appVersion="__APP_VERSION__";
     const state={allTables:[],tables:[],filtered:[],solutions:[],selectedSolutions:new Set(),componentCache:new Map(),componentScope:null,selected:null,details:new Map(),tab:"columns",running:false,scopeToken:0,reportTarget:"full"};
     const el=id=>document.getElementById(id);
     const enc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -167,7 +167,7 @@
       if(state.details.has(table.MetadataId))return state.details.get(table.MetadataId);
       if(!quiet)setStatus("Loading "+table.displayName+"…");
       const id=table.MetadataId;
-      const colSelect="MetadataId,LogicalName,SchemaName,AttributeType,AttributeTypeName,DisplayName,Description,IsCustomAttribute,IsManaged,IsPrimaryId,IsPrimaryName,RequiredLevel,MaxLength,Precision";
+      const colSelect="MetadataId,LogicalName,SchemaName,AttributeType,AttributeTypeName,DisplayName,Description,IsCustomAttribute,IsManaged,IsPrimaryId,IsPrimaryName,RequiredLevel,MaxLength,MinValue,MaxValue,Precision,PrecisionSource,Format,FormatName,DateTimeBehavior,IsSecured,IsAuditEnabled,IsValidForCreate,IsValidForUpdate";
       const oneRelSelect="MetadataId,SchemaName,ReferencingEntity,ReferencedEntity,ReferencingAttribute,ReferencedAttribute,IsCustomRelationship,IsManaged";
       const manyRelSelect="MetadataId,SchemaName,Entity1LogicalName,Entity2LogicalName,IntersectEntityName,IsCustomRelationship,IsManaged";
       const results=await Promise.all([
@@ -198,7 +198,7 @@
       el("tableReportButton").disabled=false;el("exportCsvButton").disabled=false;el("exportJsonButton").disabled=false;el("printButton").onclick=()=>openReportModal("table");
     }
     function columnsGrid(rows){return `<table class="grid"><thead><tr><th>Display name</th><th>Logical name</th><th>Type</th><th>Required</th><th>Details</th></tr></thead><tbody>${rows.map(a=>`<tr><td><b>${enc(a.displayName)}</b>${a.custom?'<span class="badge custom">Custom</span>':''}<div class="muted">${enc(a.description)}</div></td><td>${enc(a.LogicalName)}<div class="muted">${enc(a.SchemaName)}</div></td><td>${enc(a.type)}</td><td>${enc(a.required)}</td><td>${enc(columnDetails(a))}</td></tr>`).join("")}</tbody></table>`}
-    function columnDetails(a){const bits=[];if(a.IsPrimaryId)bits.push("Primary ID");if(a.IsPrimaryName)bits.push("Primary name");if(a.MaxLength!=null)bits.push("Max "+a.MaxLength);if(a.Precision!=null)bits.push("Precision "+a.Precision);if(a.Targets&&a.Targets.length)bits.push("Targets: "+a.Targets.join(", "));return bits.join(" · ")||"—"}
+    function columnDetails(a){const bits=[];const format=(a.FormatName&&a.FormatName.Value)||a.Format;if(a.IsPrimaryId)bits.push("Primary ID");if(a.IsPrimaryName)bits.push("Primary name");if(a.MaxLength!=null)bits.push("Max length "+a.MaxLength);if(a.MinValue!=null)bits.push("Min "+a.MinValue);if(a.MaxValue!=null)bits.push("Max "+a.MaxValue);if(a.Precision!=null)bits.push("Precision "+a.Precision);if(a.PrecisionSource!=null)bits.push("Precision source "+a.PrecisionSource);if(format)bits.push("Format: "+format);if(a.DateTimeBehavior&&a.DateTimeBehavior.Value)bits.push("Date behavior: "+a.DateTimeBehavior.Value);if(bool(a.IsSecured))bits.push("Field security");if(bool(a.IsAuditEnabled))bits.push("Audited");if(a.IsValidForCreate===false)bits.push("Read-only on create");if(a.IsValidForUpdate===false)bits.push("Read-only on update");if(a.Targets&&a.Targets.length)bits.push("Targets: "+a.Targets.join(", "));return bits.join(" · ")||"—"}
     function relationshipsGrid(rows){return `<table class="grid"><thead><tr><th>Schema name</th><th>Type</th><th>From</th><th>Column</th><th>To</th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${enc(r.SchemaName)}</b>${bool(r.IsCustomRelationship)?'<span class="badge custom">Custom</span>':''}</td><td>${enc(r.direction)}</td><td>${enc(r.ReferencingEntity||"—")}</td><td>${enc(r.ReferencingAttribute||r.IntersectEntityName||"—")}</td><td>${enc(r.ReferencedEntity||"—")}</td></tr>`).join("")||'<tr><td colspan="5" class="muted">No relationships returned.</td></tr>'}</tbody></table>`}
     function showError(error){console.error(error);setStatus("Unable to read metadata","error");el("detail").innerHTML=`<div class="error-box"><b>Metadata request failed</b><br>${enc(error.message)}<br><br>Open this report inside the target Dynamics 365/Power Apps environment and ensure your security role can read customizations.</div>`}
     function csvCell(value){const s=String(value??"");return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
