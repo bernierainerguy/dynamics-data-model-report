@@ -1,0 +1,8 @@
+# Build output
+bin/
+obj/
+
+# Local and editor settings
+*.user
+*.suo
+.DS_Store

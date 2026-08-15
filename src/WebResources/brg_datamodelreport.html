@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dynamics Data Model Report</title>
+  <style>
+    :root{--nav:#0b2748;--blue:#0f6cbd;--blue2:#115ea3;--bg:#f5f7fa;--card:#fff;--text:#172033;--muted:#637083;--line:#dfe5ec;--ok:#107c10;--warn:#9a6700;--shadow:0 2px 10px rgba(15,39,72,.08)}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font:14px/1.45 "Segoe UI",Arial,sans-serif;color:var(--text);background:var(--bg)}
+    button,input,select{font:inherit}.top{display:flex;align-items:center;gap:18px;padding:18px 24px;color:#fff;background:linear-gradient(120deg,var(--nav),#154f83)}
+    .mark{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:#fff;color:var(--blue);font-weight:800;font-size:20px}.title h1{font-size:21px;margin:0}.title p{margin:2px 0 0;color:#c8d9eb}
+    .actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #b9c5d2;border-radius:6px;background:#fff;color:#24364b;padding:8px 12px;cursor:pointer}.btn:hover{background:#eef5fc}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.primary:hover{background:var(--blue2)}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .status{display:flex;align-items:center;gap:8px;padding:9px 24px;background:#eef6ff;color:#174a75;border-bottom:1px solid #cfe4fa}.dot{width:8px;height:8px;border-radius:50%;background:var(--blue)}.dot.busy{animation:pulse 1s infinite}.dot.ok{background:var(--ok)}.dot.error{background:#c50f1f}@keyframes pulse{50%{opacity:.25}}
+    main{padding:20px 24px 32px}.cards{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px;margin-bottom:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:14px 16px;box-shadow:var(--shadow)}.metric{font-size:26px;font-weight:700}.label{color:var(--muted);margin-top:2px}
+    .scope-panel{margin:16px 24px 0;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow)}.scope-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.scope-head label{font-weight:600}.scope-head .select{min-width:230px}.solution-picker{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}.solution-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.solution-controls .search{max-width:420px}.check-label{display:flex;align-items:center;gap:6px;color:var(--muted)}.solution-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:7px;margin-top:10px;max-height:210px;overflow:auto;padding:2px}.solution-item{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:6px;cursor:pointer}.solution-item:hover{background:#f5f9fd}.solution-item input{margin-top:3px}.solution-name{font-weight:600}.solution-meta{font-size:12px;color:var(--muted)}
+    .toolbar{display:flex;gap:10px;align-items:center;padding:12px;background:#fff;border:1px solid var(--line);border-radius:9px 9px 0 0}.search{flex:1;min-width:180px;border:1px solid #aebac8;border-radius:6px;padding:8px 10px}.select{border:1px solid #aebac8;border-radius:6px;padding:8px;background:#fff}
+    .workspace{display:grid;grid-template-columns:minmax(260px,34%) 1fr;min-height:560px;background:#fff;border:1px solid var(--line);border-top:0;border-radius:0 0 9px 9px;overflow:hidden}.table-list{border-right:1px solid var(--line);overflow:auto;max-height:68vh}.table-row{width:100%;display:block;text-align:left;border:0;border-bottom:1px solid #edf0f4;background:#fff;padding:11px 13px;cursor:pointer}.table-row:hover,.table-row.active{background:#eaf4ff}.row-title{font-weight:600}.row-meta{font-size:12px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.badge{display:inline-block;padding:1px 6px;margin-left:6px;border-radius:9px;font-size:11px;background:#e8eef5;color:#43566c}.badge.custom{background:#e6f4ea;color:#256029}
+    .detail{padding:18px;overflow:auto;max-height:68vh}.empty{height:100%;min-height:360px;display:grid;place-items:center;text-align:center;color:var(--muted)}.detail-head{display:flex;align-items:flex-start;gap:12px}.detail-head h2{margin:0;font-size:20px}.detail-head p{margin:3px 0;color:var(--muted)}.detail-head .btn{margin-left:auto}.facts{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr));gap:8px;margin:16px 0}.fact{background:#f7f9fb;border-radius:6px;padding:9px}.fact b{display:block;font-size:12px;color:var(--muted);font-weight:500}.tabs{display:flex;border-bottom:1px solid var(--line);gap:4px}.tab{padding:9px 12px;border:0;background:transparent;cursor:pointer;border-bottom:3px solid transparent}.tab.active{color:var(--blue);border-color:var(--blue);font-weight:600}
+    .grid-wrap{overflow:auto}.grid{width:100%;border-collapse:collapse;font-size:13px}.grid th{position:sticky;top:0;background:#f1f4f8;text-align:left;color:#415167;font-weight:600}.grid th,.grid td{padding:8px 9px;border-bottom:1px solid #e7ebf0;vertical-align:top}.grid tr:hover td{background:#fafcff}.muted{color:var(--muted)}.error-box{background:#fde7e9;color:#8e1521;border:1px solid #f1aeb5;padding:12px;border-radius:7px;margin:12px 0}.progress{height:5px;background:#dce7f2}.progress span{display:block;height:100%;background:var(--blue);transition:width .2s}.hidden{display:none!important}
+    .modal{position:fixed;inset:0;background:rgba(0,18,38,.46);display:grid;place-items:center;padding:20px;z-index:20}.modal-card{width:min(560px,100%);background:#fff;border-radius:10px;padding:20px;box-shadow:0 16px 48px rgba(0,0,0,.25)}.modal-card h2{margin-top:0}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+    @media(max-width:850px){.top{align-items:flex-start;flex-wrap:wrap}.actions{margin-left:60px}.scope-panel{margin:12px 12px 0}.cards{grid-template-columns:repeat(2,1fr)}.workspace{grid-template-columns:1fr}.table-list{max-height:280px;border-right:0;border-bottom:1px solid var(--line)}.detail{max-height:none}.facts{grid-template-columns:repeat(2,1fr)}}
+    @media print{.top,.status,.toolbar,.table-list,.actions,.tabs,.detail-head .btn{display:none!important}main{padding:0}.workspace{display:block;border:0}.detail{max-height:none;padding:0}.cards{box-shadow:none}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="mark">DM</div>
+    <div class="title"><h1>Dynamics Data Model Report</h1><p><span id="environmentName">Dataverse metadata explorer</span> · v<span id="appVersion">1.1.0.6</span></p></div>
+    <div class="actions">
+      <button class="btn" id="refreshButton">Refresh</button>
+      <button class="btn" id="tableReportButton" disabled>Table report</button>
+      <button class="btn" id="exportCsvButton" disabled>Export CSV</button>
+      <button class="btn" id="exportJsonButton" disabled>Export JSON</button>
+      <button class="btn primary" id="fullReportButton" disabled>Build full report</button>
+    </div>
+  </header>
+  <div class="status"><span class="dot busy" id="statusDot"></span><span id="statusText">Connecting to Dataverse…</span></div>
+  <div class="progress hidden" id="progress"><span id="progressBar" style="width:0"></span></div>
+  <section class="scope-panel" aria-labelledby="reportScopeLabel">
+    <div class="scope-head">
+      <label id="reportScopeLabel" for="reportScope">Report scope</label>
+      <select class="select" id="reportScope">
+        <option value="environment">Entire environment</option>
+        <option value="selected">Selected solution(s)</option>
+        <option value="nondefault">All non-default solutions</option>
+      </select>
+      <span class="muted" id="scopeSummary">All Dataverse tables</span>
+    </div>
+    <div class="solution-picker hidden" id="solutionPicker">
+      <div class="solution-controls">
+        <input class="search" id="solutionSearch" type="search" placeholder="Search solutions" aria-label="Search solutions">
+        <label class="check-label"><input type="checkbox" id="showDefaultSolutions"> Show Default and Active solutions</label>
+      </div>
+      <div class="solution-list" id="solutionList" aria-label="Solutions"></div>
+    </div>
+  </section>
+  <main>
+    <section class="cards">
+      <div class="card"><div class="metric" id="tableCount">—</div><div class="label">Tables in scope</div></div>
+      <div class="card"><div class="metric" id="customCount">—</div><div class="label">Custom tables</div></div>
+      <div class="card"><div class="metric" id="columnCount">—</div><div class="label">Columns loaded</div></div>
+      <div class="card"><div class="metric" id="relationshipCount">—</div><div class="label">Relationships loaded</div></div>
+    </section>
+    <section class="toolbar">
+      <input class="search" id="search" type="search" placeholder="Search display, logical, or schema name" aria-label="Search tables">
+      <select class="select" id="scope" aria-label="Table scope"><option value="all">All tables</option><option value="custom">Custom only</option><option value="standard">Standard only</option></select>
+      <span class="muted" id="visibleCount"></span>
+    </section>
+    <section class="workspace">
+      <nav class="table-list" id="tableList" aria-label="Tables"></nav>
+      <article class="detail" id="detail"><div class="empty"><div><h2>Select a table</h2><p>Choose a table to load its columns and relationships.</p></div></div></article>
+    </section>
+  </main>
+  <div class="modal hidden" id="reportModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card"><h2 id="modalTitle">Build full data model report</h2><p id="modalDescription">This reads columns and relationships for every visible table. Download a self-contained HTML report, or open the print dialog and choose Save as PDF. Large environments can take several minutes.</p><label id="customOnlyLabel"><input type="checkbox" id="customOnlyReport"> Include custom tables only</label><div class="modal-actions"><button class="btn" id="cancelReport">Cancel</button><button class="btn" id="startReport">Download HTML</button><button class="btn primary" id="startPdf">Print / Save PDF</button></div></div>
+  </div>
+  <script>
+  (function(){
+    "use strict";
+    const apiVersion="v9.2",appVersion="1.1.0.6";
+    const state={allTables:[],tables:[],filtered:[],solutions:[],selectedSolutions:new Set(),componentCache:new Map(),componentScope:null,selected:null,details:new Map(),tab:"columns",running:false,scopeToken:0,reportTarget:"full"};
+    const el=id=>document.getElementById(id);
+    const enc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const label=o=>o&&o.UserLocalizedLabel?o.UserLocalizedLabel.Label:"";
+    const bool=v=>v&&typeof v==="object"&&"Value" in v?v.Value:v;
+    const clientUrl=()=>{
+      try{if(parent&&parent.Xrm&&parent.Xrm.Utility)return parent.Xrm.Utility.getGlobalContext().getClientUrl()}catch(_e){}
+      const marker="/WebResources/";const i=location.href.indexOf(marker);return i>0?location.href.slice(0,i):location.origin;
+    };
+    function setStatus(message,kind="busy"){el("statusText").textContent=message;el("statusDot").className="dot "+kind}
+    async function get(path){
+      const response=await fetch(path.startsWith("http")?path:clientUrl()+"/api/data/"+apiVersion+"/"+path,{credentials:"same-origin",headers:{Accept:"application/json","OData-MaxVersion":"4.0","OData-Version":"4.0","Prefer":"odata.include-annotations=\"*\""}});
+      if(!response.ok){let detail="";const body=await response.text();try{const parsed=JSON.parse(body);detail=parsed.error&&parsed.error.message||body}catch(_e){detail=body}throw new Error(detail||response.status+" "+response.statusText)}
+      return response.json();
+    }
+    async function getAll(path){let rows=[];let next=path;while(next){const data=await get(next);rows=rows.concat(data.value||[]);next=data["@odata.nextLink"]||null}return rows}
+    async function ensureConfigurationPage(){
+      const solutionFilter=encodeURIComponent("uniquename eq 'DynamicsDataModelReport'"),resourceFilter=encodeURIComponent("name eq 'brg_datamodelreport.html'");
+      const [solutions,resources]=await Promise.all([getAll("solutions?$select=solutionid,_configurationpageid_value&$filter="+solutionFilter),getAll("webresourceset?$select=webresourceid,name&$filter="+resourceFilter)]);
+      const solution=solutions[0],resource=resources[0];if(!solution||!resource||solution._configurationpageid_value)return;
+      const response=await fetch(clientUrl()+"/api/data/"+apiVersion+"/solutions("+solution.solutionid+")",{method:"PATCH",credentials:"same-origin",headers:{"Content-Type":"application/json","OData-MaxVersion":"4.0","OData-Version":"4.0","If-Match":"*"},body:JSON.stringify({"configurationpageid@odata.bind":"/webresourceset("+resource.webresourceid+")"})});
+      if(!response.ok)throw new Error("Configuration page registration failed: "+response.status+" "+await response.text());
+    }
+    function normalizeTable(t){return {...t,displayName:label(t.DisplayName)||t.SchemaName||t.LogicalName,description:label(t.Description),custom:!!bool(t.IsCustomEntity),managed:!!bool(t.IsManaged)}}
+    const guid=value=>String(value||"").replace(/[{}]/g,"").toLowerCase();
+    const isDefaultSolution=s=>["default","active"].includes((s.uniquename||"").toLowerCase())||/(^|\s)(default solution|active solution)(\s|$)/i.test(s.friendlyname||"");
+    async function loadTables(){
+      setStatus("Reading solutions and table definitions…");
+      const select="MetadataId,LogicalName,SchemaName,EntitySetName,DisplayName,Description,IsCustomEntity,IsManaged,OwnershipType,PrimaryIdAttribute,PrimaryNameAttribute,ObjectTypeCode";
+      const [rows,solutions]=await Promise.all([
+        getAll("EntityDefinitions?$select="+select),
+        getAll("solutions?$select=solutionid,uniquename,friendlyname,ismanaged,version,isvisible")
+      ]);
+      state.allTables=rows.map(normalizeTable).filter(t=>t.LogicalName&&!t.IsPrivate).sort((a,b)=>a.displayName.localeCompare(b.displayName));
+      state.tables=state.allTables.slice();
+      state.solutions=solutions.filter(s=>s.isvisible!==false).sort((a,b)=>(a.friendlyname||a.uniquename||"").localeCompare(b.friendlyname||b.uniquename||""));
+      try{const context=parent.Xrm.Utility.getGlobalContext();el("environmentName").textContent=(context.organizationSettings&&context.organizationSettings.friendlyName)||new URL(clientUrl()).hostname}catch(_e){el("environmentName").textContent=new URL(clientUrl()).hostname}
+      renderSolutions();
+      if(el("reportScope").value==="environment"){updateScopeMetrics();el("fullReportButton").disabled=false;applyFilter();setStatus("Metadata ready — select a table","ok")}else await applyReportScope();
+    }
+    function updateScopeMetrics(){el("tableCount").textContent=state.tables.length.toLocaleString();el("customCount").textContent=state.tables.filter(t=>t.custom).length.toLocaleString()}
+    function renderSolutions(){
+      const q=el("solutionSearch").value.trim().toLowerCase(),showDefault=el("showDefaultSolutions").checked;
+      const rows=state.solutions.filter(s=>(showDefault||!isDefaultSolution(s))&&(!q||[s.friendlyname,s.uniquename,s.version].some(v=>(v||"").toLowerCase().includes(q))));
+      el("solutionList").innerHTML=rows.map(s=>`<label class="solution-item"><input type="checkbox" data-solution-id="${enc(s.solutionid)}" ${state.selectedSolutions.has(guid(s.solutionid))?"checked":""}><span><span class="solution-name">${enc(s.friendlyname||s.uniquename)}</span><span class="solution-meta">${enc(s.uniquename)} · ${s.ismanaged?"Managed":"Unmanaged"} · ${enc(s.version||"—")}</span></span></label>`).join("")||'<div class="muted">No matching solutions.</div>';
+    }
+    async function solutionComponents(solution){
+      const id=guid(solution.solutionid);if(state.componentCache.has(id))return state.componentCache.get(id);
+      const filter=`_solutionid_value eq ${id} and (componenttype eq 1 or componenttype eq 2 or componenttype eq 3 or componenttype eq 10)`;
+      const rows=await getAll("solutioncomponents?$select=solutioncomponentid,objectid,componenttype,rootcomponentbehavior,rootsolutioncomponentid&$filter="+encodeURIComponent(filter));
+      state.componentCache.set(id,rows);return rows;
+    }
+    async function loadComponentsForSolutions(solutions){
+      const rows=[];let next=0;
+      async function worker(){while(next<solutions.length){const solution=solutions[next++];rows.push(...await solutionComponents(solution))}}
+      await Promise.all(Array.from({length:Math.min(4,solutions.length||1)},worker));return rows;
+    }
+    function buildComponentScope(rows){
+      const roots=new Map(),scope=new Map();
+      rows.filter(c=>Number(c.componenttype)===1).forEach(c=>{
+        const tableId=guid(c.objectid),componentId=guid(c.solutioncomponentid);if(!tableId)return;
+        roots.set(componentId,tableId);if(!scope.has(tableId))scope.set(tableId,{columns:new Set(),relationships:new Set(),allColumns:false,allRelationships:false});
+        if(Number(c.rootcomponentbehavior||0)===0){scope.get(tableId).allColumns=true;scope.get(tableId).allRelationships=true}
+      });
+      rows.forEach(c=>{
+        const type=Number(c.componenttype);if(![2,3,10].includes(type))return;
+        const tableId=roots.get(guid(c.rootsolutioncomponentid));if(!tableId||!scope.has(tableId))return;
+        if(type===2)scope.get(tableId).columns.add(guid(c.objectid));else scope.get(tableId).relationships.add(guid(c.objectid));
+      });
+      return scope;
+    }
+    function clearSelection(){state.details.clear();state.selected=null;updateTotals();el("tableReportButton").disabled=true;el("exportCsvButton").disabled=true;el("exportJsonButton").disabled=true;el("detail").innerHTML='<div class="empty"><div><h2>Select a table</h2><p>Choose a table to load its columns and relationships.</p></div></div>'}
+    async function applyReportScope(){
+      const token=++state.scopeToken,mode=el("reportScope").value;el("solutionPicker").classList.toggle("hidden",mode!=="selected");clearSelection();
+      if(mode==="environment"){
+        state.componentScope=null;state.tables=state.allTables.slice();el("scopeSummary").textContent="All Dataverse tables";updateScopeMetrics();applyFilter();el("fullReportButton").disabled=false;setStatus("Environment scope ready","ok");return;
+      }
+      let solutions=mode==="selected"?state.solutions.filter(s=>state.selectedSolutions.has(guid(s.solutionid))):state.solutions.filter(s=>!isDefaultSolution(s));
+      if(!solutions.length){state.componentScope=new Map();state.tables=[];el("scopeSummary").textContent=mode==="selected"?"Select one or more solutions":"No non-default solutions found";updateScopeMetrics();applyFilter();el("fullReportButton").disabled=true;setStatus("Choose a solution to continue","ok");return}
+      setStatus(`Reading components from ${solutions.length} ${solutions.length===1?"solution":"solutions"}…`);
+      const rows=await loadComponentsForSolutions(solutions);if(token!==state.scopeToken)return;
+      state.componentScope=buildComponentScope(rows);state.tables=state.allTables.filter(t=>state.componentScope.has(guid(t.MetadataId)));
+      el("scopeSummary").textContent=mode==="selected"?`${solutions.length} selected · ${state.tables.length} tables`:`Default and Active excluded · ${state.tables.length} tables`;
+      updateScopeMetrics();applyFilter();el("fullReportButton").disabled=!state.tables.length;setStatus(`Solution scope ready — ${state.tables.length} tables`,"ok");
+    }
+    function applyFilter(){
+      const q=el("search").value.trim().toLowerCase(),scope=el("scope").value;
+      state.filtered=state.tables.filter(t=>(scope==="all"||(scope==="custom"?t.custom:!t.custom))&&(!q||[t.displayName,t.LogicalName,t.SchemaName,t.description].some(v=>(v||"").toLowerCase().includes(q))));
+      el("visibleCount").textContent=state.filtered.length.toLocaleString()+" shown";
+      el("tableList").innerHTML=state.filtered.map(t=>`<button class="table-row ${state.selected&&state.selected.MetadataId===t.MetadataId?"active":""}" data-id="${enc(t.MetadataId)}"><div class="row-title">${enc(t.displayName)}<span class="badge ${t.custom?"custom":""}">${t.custom?"Custom":"Standard"}</span></div><div class="row-meta">${enc(t.LogicalName)} · ${enc(t.SchemaName)}</div></button>`).join("")||'<div class="empty"><p>No matching tables.</p></div>';
+    }
+    function updateTotals(){let c=0,r=0;state.details.forEach(d=>{c+=d.columns.length;r+=d.relationships.length});el("columnCount").textContent=c.toLocaleString();el("relationshipCount").textContent=r.toLocaleString()}
+    async function loadDetail(table,quiet=false){
+      if(state.details.has(table.MetadataId))return state.details.get(table.MetadataId);
+      if(!quiet)setStatus("Loading "+table.displayName+"…");
+      const id=table.MetadataId;
+      const colSelect="MetadataId,LogicalName,SchemaName,AttributeType,AttributeTypeName,DisplayName,Description,IsCustomAttribute,IsManaged,IsPrimaryId,IsPrimaryName,RequiredLevel";
+      const oneRelSelect="MetadataId,SchemaName,ReferencingEntity,ReferencedEntity,ReferencingAttribute,ReferencedAttribute,IsCustomRelationship,IsManaged";
+      const manyRelSelect="MetadataId,SchemaName,Entity1LogicalName,Entity2LogicalName,IntersectEntityName,IsCustomRelationship,IsManaged";
+      const results=await Promise.all([
+        getAll(`EntityDefinitions(${id})/Attributes?$select=${colSelect}`),
+        getAll(`EntityDefinitions(${id})/ManyToOneRelationships?$select=${oneRelSelect}`),
+        getAll(`EntityDefinitions(${id})/OneToManyRelationships?$select=${oneRelSelect}`),
+        getAll(`EntityDefinitions(${id})/ManyToManyRelationships?$select=${manyRelSelect}`)
+      ]);
+      const tableScope=state.componentScope&&state.componentScope.get(guid(id));
+      let columns=results[0].map(a=>({...a,displayName:label(a.DisplayName)||a.SchemaName||a.LogicalName,description:label(a.Description),custom:!!bool(a.IsCustomAttribute),managed:!!bool(a.IsManaged),required:a.RequiredLevel&&a.RequiredLevel.Value||"None",type:a.AttributeTypeName&&a.AttributeTypeName.Value||a.AttributeType||"",Targets:results[1].filter(r=>r.ReferencingAttribute===a.LogicalName).map(r=>r.ReferencedEntity)}));
+      if(tableScope&&!tableScope.allColumns)columns=columns.filter(a=>tableScope.columns.has(guid(a.MetadataId)));
+      columns.sort((a,b)=>a.displayName.localeCompare(b.displayName));
+      let relationships=[];results[1].forEach(x=>relationships.push({...x,direction:"Many-to-one"}));results[2].forEach(x=>relationships.push({...x,direction:"One-to-many"}));results[3].forEach(x=>relationships.push({...x,ReferencingEntity:x.Entity1LogicalName,ReferencedEntity:x.Entity2LogicalName,direction:"Many-to-many"}));
+      if(tableScope&&!tableScope.allRelationships)relationships=relationships.filter(r=>tableScope.relationships.has(guid(r.MetadataId)));
+      relationships.sort((a,b)=>(a.SchemaName||"").localeCompare(b.SchemaName||""));
+      const detail={columns,relationships};state.details.set(id,detail);updateTotals();if(!quiet)setStatus(table.displayName+" loaded","ok");return detail;
+    }
+    async function selectTable(id){
+      const table=state.tables.find(t=>t.MetadataId===id);if(!table)return;state.selected=table;applyFilter();
+      el("detail").innerHTML='<div class="empty"><p>Loading table metadata…</p></div>';
+      try{await loadDetail(table);renderDetail()}catch(error){showError(error)}
+    }
+    function tableFacts(t,d){return `<div class="facts"><div class="fact"><b>Logical name</b>${enc(t.LogicalName)}</div><div class="fact"><b>Schema name</b>${enc(t.SchemaName)}</div><div class="fact"><b>Ownership</b>${enc(t.OwnershipType||"—")}</div><div class="fact"><b>Primary name</b>${enc(t.PrimaryNameAttribute||"—")}</div><div class="fact"><b>Entity set</b>${enc(t.EntitySetName||"—")}</div><div class="fact"><b>Object type code</b>${enc(t.ObjectTypeCode??"—")}</div><div class="fact"><b>Columns</b>${d.columns.length}</div><div class="fact"><b>Relationships</b>${d.relationships.length}</div></div>`}
+    function renderDetail(){
+      const t=state.selected,d=state.details.get(t.MetadataId);if(!t||!d)return;
+      const body=state.tab==="columns"?columnsGrid(d.columns):relationshipsGrid(d.relationships);
+      el("detail").innerHTML=`<div class="detail-head"><div><h2>${enc(t.displayName)}<span class="badge ${t.custom?"custom":""}">${t.custom?"Custom":"Standard"}</span></h2><p>${enc(t.description||"No description supplied.")}</p></div><button class="btn" id="printButton">Print / Save PDF</button></div>${tableFacts(t,d)}<div class="tabs"><button class="tab ${state.tab==="columns"?"active":""}" data-tab="columns">Columns (${d.columns.length})</button><button class="tab ${state.tab==="relationships"?"active":""}" data-tab="relationships">Relationships (${d.relationships.length})</button></div><div class="grid-wrap">${body}</div>`;
+      el("tableReportButton").disabled=false;el("exportCsvButton").disabled=false;el("exportJsonButton").disabled=false;el("printButton").onclick=()=>openReportModal("table");
+    }
+    function columnsGrid(rows){return `<table class="grid"><thead><tr><th>Display name</th><th>Logical name</th><th>Type</th><th>Required</th><th>Details</th></tr></thead><tbody>${rows.map(a=>`<tr><td><b>${enc(a.displayName)}</b>${a.custom?'<span class="badge custom">Custom</span>':''}<div class="muted">${enc(a.description)}</div></td><td>${enc(a.LogicalName)}<div class="muted">${enc(a.SchemaName)}</div></td><td>${enc(a.type)}</td><td>${enc(a.required)}</td><td>${enc(columnDetails(a))}</td></tr>`).join("")}</tbody></table>`}
+    function columnDetails(a){const bits=[];if(a.IsPrimaryId)bits.push("Primary ID");if(a.IsPrimaryName)bits.push("Primary name");if(a.MaxLength!=null)bits.push("Max "+a.MaxLength);if(a.Precision!=null)bits.push("Precision "+a.Precision);if(a.Targets&&a.Targets.length)bits.push("Targets: "+a.Targets.join(", "));return bits.join(" · ")||"—"}
+    function relationshipsGrid(rows){return `<table class="grid"><thead><tr><th>Schema name</th><th>Type</th><th>From</th><th>Column</th><th>To</th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${enc(r.SchemaName)}</b>${bool(r.IsCustomRelationship)?'<span class="badge custom">Custom</span>':''}</td><td>${enc(r.direction)}</td><td>${enc(r.ReferencingEntity||"—")}</td><td>${enc(r.ReferencingAttribute||r.IntersectEntityName||"—")}</td><td>${enc(r.ReferencedEntity||"—")}</td></tr>`).join("")||'<tr><td colspan="5" class="muted">No relationships returned.</td></tr>'}</tbody></table>`}
+    function showError(error){console.error(error);setStatus("Unable to read metadata","error");el("detail").innerHTML=`<div class="error-box"><b>Metadata request failed</b><br>${enc(error.message)}<br><br>Open this report inside the target Dynamics 365/Power Apps environment and ensure your security role can read customizations.</div>`}
+    function csvCell(value){const s=String(value??"");return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
+    function download(name,type,content){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+    function exportCsv(){const t=state.selected,d=t&&state.details.get(t.MetadataId);if(!d)return;const rows=state.tab==="columns"?[["Table","Display name","Logical name","Schema name","Type","Required","Custom","Description","Details"],...d.columns.map(a=>[t.LogicalName,a.displayName,a.LogicalName,a.SchemaName,a.type,a.required,a.custom,a.description,columnDetails(a)])]:[["Table","Schema name","Type","Referencing table","Referencing column","Referenced table","Custom"],...d.relationships.map(r=>[t.LogicalName,r.SchemaName,r.direction,r.ReferencingEntity,r.ReferencingAttribute,r.ReferencedEntity,bool(r.IsCustomRelationship)])];download(`${t.LogicalName}-${state.tab}.csv`,"text/csv;charset=utf-8",rows.map(r=>r.map(csvCell).join(",")).join("\r\n"))}
+    function scopeDescription(){const mode=el("reportScope").value;if(mode==="environment")return "Entire environment";if(mode==="nondefault")return "All non-default solutions";return state.solutions.filter(s=>state.selectedSolutions.has(guid(s.solutionid))).map(s=>s.friendlyname||s.uniquename).join(", ")||"No solutions selected"}
+    function exportJson(){const t=state.selected,d=t&&state.details.get(t.MetadataId);if(!d)return;download(`${t.LogicalName}-data-model.json`,"application/json",JSON.stringify({generatedAt:new Date().toISOString(),applicationVersion:appVersion,environment:clientUrl(),scope:scopeDescription(),table:t,...d},null,2))}
+    function reportHtml(tables){
+      const sections=tables.map((t,index)=>{const d=state.details.get(t.MetadataId);return `<section class="model-section ${index===0?"active":""}" data-table="${enc(t.LogicalName)}"><h2>${enc(t.displayName)} <small>${enc(t.LogicalName)}</small></h2><p>${enc(t.description)}</p><h3>Columns (${d.columns.length})</h3>${columnsGrid(d.columns)}<h3>Relationships (${d.relationships.length})</h3>${relationshipsGrid(d.relationships)}</section>`}).join("");
+      const paginationScript="<scr"+"ipt>(function(){const pages=Array.from(document.querySelectorAll('.model-section')),number=document.getElementById('pageNumber'),total=document.getElementById('pageTotal'),previous=document.getElementById('previousPage'),next=document.getElementById('nextPage');let current=0;function show(index){if(!pages.length)return;current=Math.max(0,Math.min(index,pages.length-1));pages.forEach((page,i)=>page.classList.toggle('active',i===current));number.value=current+1;previous.disabled=current===0;next.disabled=current===pages.length-1;location.hash=pages[current].dataset.table}total.textContent=pages.length;number.max=pages.length;previous.onclick=()=>show(current-1);next.onclick=()=>show(current+1);number.onchange=()=>show(Number(number.value)-1);const requested=decodeURIComponent(location.hash.slice(1)),found=pages.findIndex(page=>page.dataset.table===requested);show(found>=0?found:0)})()<\/scr"+"ipt>";
+      return `<!doctype html><html><head><meta charset="utf-8"><title>Dataverse data model report</title><style>@page{size:A4 landscape;margin:12mm}body{font:13px/1.4 Segoe UI,Arial;margin:32px;color:#172033}h1{color:#0b2748}h2{margin-top:28px;border-bottom:2px solid #0f6cbd;padding-bottom:6px}h2,h3{break-after:avoid}small,.muted{color:#667085;font-weight:400}.report-nav{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:8px;padding:10px 0;background:#fff;border-bottom:1px solid #d7dde5}.report-nav button,.report-nav input{font:inherit;padding:6px 9px;border:1px solid #aebac8;border-radius:5px;background:#fff}.report-nav button{cursor:pointer}.report-nav button:disabled{opacity:.45;cursor:default}.report-nav input{width:64px}.model-section{display:none}.model-section.active{display:block}.grid{width:100%;border-collapse:collapse}.grid th,.grid td{text-align:left;vertical-align:top;padding:6px;border-bottom:1px solid #ddd}.grid th{background:#eef4fa}.badge{font-size:10px;margin-left:5px;padding:1px 5px;background:#e6f4ea;border-radius:8px}.fact,.tabs{display:none}@media print{body{margin:0}.report-nav{display:none}.model-section{display:block!important;break-before:page}.model-section:first-of-type{break-before:auto}.grid thead{display:table-header-group}.grid tr{break-inside:avoid}h2,h3{break-after:avoid}}</style></head><body><h1>Dataverse Data Model Report</h1><p>Application version: ${enc(appVersion)}<br>Environment: ${enc(clientUrl())}<br>Scope: ${enc(scopeDescription())}<br>Generated: ${enc(new Date().toLocaleString())}<br>Tables: ${tables.length}</p><nav class="report-nav" aria-label="Report pages"><button id="previousPage">Previous</button><label>Table <input id="pageNumber" type="number" min="1" value="1"> of <span id="pageTotal">${tables.length}</span></label><button id="nextPage">Next</button></nav>${sections}${paginationScript}</body></html>`
+    }
+    function openReportModal(target){
+      if(target==="table"&&!state.selected)return;state.reportTarget=target;const tableMode=target==="table";
+      el("modalTitle").textContent=tableMode?state.selected.displayName+" data model report":"Build full data model report";
+      el("modalDescription").textContent=tableMode?"Create a report for this table containing both its columns and relationships.":"This reads columns and relationships for every visible table. Download a self-contained HTML report, or open the print dialog and choose Save as PDF. Large environments can take several minutes.";
+      el("customOnlyLabel").classList.toggle("hidden",tableMode);el("reportModal").classList.remove("hidden");
+    }
+    async function buildFullReport(output="html"){
+      if(state.running)return;let printWindow=null;if(output==="pdf"){printWindow=window.open(clientUrl()+"/WebResources/brg_datamodelreport.html?printView=1","_blank");if(!printWindow){setStatus("Pop-up blocked — allow pop-ups to save the report as PDF","error");return}}
+      state.running=true;el("reportModal").classList.add("hidden");el("progress").classList.remove("hidden");el("fullReportButton").disabled=true;el("tableReportButton").disabled=true;
+      const tables=(state.reportTarget==="table"&&state.selected?[state.selected]:(el("customOnlyReport").checked?state.tables.filter(t=>t.custom):state.filtered)).slice();let done=0;const queue=tables.slice();
+      async function worker(){while(queue.length){const t=queue.shift();setStatus(`Building report: ${done+1} of ${tables.length} — ${t.displayName}`);try{await loadDetail(t,true)}catch(error){console.warn("Skipped",t.LogicalName,error)}done++;el("progressBar").style.width=(done/Math.max(tables.length,1)*100)+"%"}}
+      try{await Promise.all(Array.from({length:Math.min(4,tables.length||1)},worker));const complete=tables.filter(t=>state.details.has(t.MetadataId)),html=reportHtml(complete);if(output==="pdf"){printWindow.document.open();printWindow.document.write(html);printWindow.document.close();printWindow.focus();setTimeout(()=>printWindow.print(),400);setStatus(`Print-ready report opened — choose Save as PDF (${complete.length} ${complete.length===1?"table":"tables"})`,"ok")}else{const prefix=state.reportTarget==="table"&&state.selected?state.selected.LogicalName:"Dataverse-Data-Model";download(`${prefix}-${new Date().toISOString().slice(0,10)}.html`,"text/html;charset=utf-8",html);setStatus(`Report downloaded — ${complete.length} ${complete.length===1?"table":"tables"}`,"ok")}}catch(error){if(printWindow&&!printWindow.closed)printWindow.close();showError(error)}finally{state.running=false;el("progress").classList.add("hidden");el("fullReportButton").disabled=false;el("tableReportButton").disabled=!state.selected;updateTotals()}
+    }
+    el("search").addEventListener("input",applyFilter);el("scope").addEventListener("change",applyFilter);el("tableList").addEventListener("click",e=>{const row=e.target.closest("[data-id]");if(row)selectTable(row.dataset.id)});
+    el("reportScope").addEventListener("change",()=>applyReportScope().catch(showError));el("solutionSearch").addEventListener("input",renderSolutions);el("showDefaultSolutions").addEventListener("change",renderSolutions);
+    el("solutionList").addEventListener("change",e=>{const input=e.target.closest("[data-solution-id]");if(!input)return;const id=guid(input.dataset.solutionId);if(input.checked)state.selectedSolutions.add(id);else state.selectedSolutions.delete(id);applyReportScope().catch(showError)});
+    el("detail").addEventListener("click",e=>{const tab=e.target.closest("[data-tab]");if(tab){state.tab=tab.dataset.tab;renderDetail()}});
+    el("refreshButton").onclick=()=>{state.allTables=[];state.tables=[];state.solutions=[];state.componentCache.clear();state.details.clear();state.selected=null;loadTables().catch(showError)};el("exportCsvButton").onclick=exportCsv;el("exportJsonButton").onclick=exportJson;
+    el("fullReportButton").onclick=()=>openReportModal("full");el("tableReportButton").onclick=()=>openReportModal("table");el("cancelReport").onclick=()=>el("reportModal").classList.add("hidden");el("startReport").onclick=()=>buildFullReport("html");el("startPdf").onclick=()=>buildFullReport("pdf");
+    ensureConfigurationPage().catch(error=>console.warn(error.message));loadTables().catch(showError);
+  })();
+  </script>
+</body>
+</html>

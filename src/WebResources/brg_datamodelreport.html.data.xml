@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{848740b2-2698-f111-b8dc-6045bdd1d357}</WebResourceId>
+  <Name>brg_datamodelreport.html</Name>
+  <DisplayName>Dynamics Data Model Report</DisplayName>
+  <Description>Interactive report of Dataverse tables, columns, and relationships with CSV, JSON, and HTML exports.</Description>
+  <WebResourceType>1</WebResourceType>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/brg_datamodelreporthtml848740B2-2698-F111-B8DC-6045BDD1D357</FileName>
+</WebResource>
