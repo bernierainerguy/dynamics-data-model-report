@@ -8,21 +8,19 @@ A transportable managed Dataverse solution that reports the live data model of t
 - Shows columns, types, required levels, descriptions, and lookup targets.
 - Shows one-to-many, many-to-one, and many-to-many relationships.
 - Filters tables by name and custom/standard scope.
-- Filters the report to selected solutions or all non-default solutions.
-- Builds a self-contained, paginated HTML report for all visible tables.
-- Produces a complete single-table report containing both columns and relationships.
-- Downloads HTML and opens the system Print dialog to save a PDF.
+- Exports a selected table to CSV or JSON.
+- Builds a self-contained HTML report for all visible tables or custom tables only.
 - Uses the current signed-in Dataverse session; no connection string or environment URL is stored.
 
 ## Build
 
-Prerequisites: .NET SDK and Microsoft Power Platform CLI.
+Prerequisite: Microsoft Power Platform CLI (`pac`) available on your `PATH`.
 
 ```bash
-dotnet build --configuration Release
+./build.sh
 ```
 
-The managed ZIP is written beneath `bin/Release/` and is intentionally not committed to this repository.
+The build injects the version from `src/Other/Solution.xml` into the web resource, so the visible app and report version always matches the solution package. The managed ZIP is written beneath `bin/Release/`.
 
 ## Import and open
 

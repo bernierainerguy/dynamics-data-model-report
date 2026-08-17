@@ -6,9 +6,9 @@
       <LocalizedName description="Dynamics Data Model Report" languagecode="1033" />
     </LocalizedNames>
     <Descriptions>
-      <Description description="Generate, filter, and export Dataverse data-model reports." languagecode="1033" />
+      <Description description="Generate, filter, and export Dataverse data-model reports.&#xA;&#xA;Open the report: https://YOUR-DOMAIN.dynamics.com/WebResources/brg_datamodelreport.html" languagecode="1033" />
     </Descriptions>
-    <Version>1.1.0.9</Version>
+    <Version>1.1.0.13</Version>
     <Managed>2</Managed>
     <ConfigurationPageId>{848740b2-2698-f111-b8dc-6045bdd1d357}</ConfigurationPageId>
     <Publisher>

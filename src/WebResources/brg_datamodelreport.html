@@ -25,7 +25,7 @@
 <body>
   <header class="top">
     <div class="mark">DM</div>
-    <div class="title"><h1>Dynamics Data Model Report</h1><p><span id="environmentName">Dataverse metadata explorer</span> · v<span id="appVersion">1.1.0.6</span></p></div>
+    <div class="title"><h1>Dynamics Data Model Report</h1><p><span id="environmentName">Dataverse metadata explorer</span> · v<span id="appVersion">__APP_VERSION__</span></p></div>
     <div class="actions">
       <button class="btn" id="refreshButton">Refresh</button>
       <button class="btn" id="tableReportButton" disabled>Table report</button>
@@ -77,7 +77,7 @@
   <script>
   (function(){
     "use strict";
-    const apiVersion="v9.2",appVersion="1.1.0.6";
+    const apiVersion="v9.2",appVersion="__APP_VERSION__";
     const state={allTables:[],tables:[],filtered:[],solutions:[],selectedSolutions:new Set(),componentCache:new Map(),componentScope:null,selected:null,details:new Map(),tab:"columns",running:false,scopeToken:0,reportTarget:"full"};
     const el=id=>document.getElementById(id);
     const enc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -94,13 +94,6 @@
       return response.json();
     }
     async function getAll(path){let rows=[];let next=path;while(next){const data=await get(next);rows=rows.concat(data.value||[]);next=data["@odata.nextLink"]||null}return rows}
-    async function ensureConfigurationPage(){
-      const solutionFilter=encodeURIComponent("uniquename eq 'DynamicsDataModelReport'"),resourceFilter=encodeURIComponent("name eq 'brg_datamodelreport.html'");
-      const [solutions,resources]=await Promise.all([getAll("solutions?$select=solutionid,_configurationpageid_value&$filter="+solutionFilter),getAll("webresourceset?$select=webresourceid,name&$filter="+resourceFilter)]);
-      const solution=solutions[0],resource=resources[0];if(!solution||!resource||solution._configurationpageid_value)return;
-      const response=await fetch(clientUrl()+"/api/data/"+apiVersion+"/solutions("+solution.solutionid+")",{method:"PATCH",credentials:"same-origin",headers:{"Content-Type":"application/json","OData-MaxVersion":"4.0","OData-Version":"4.0","If-Match":"*"},body:JSON.stringify({"configurationpageid@odata.bind":"/webresourceset("+resource.webresourceid+")"})});
-      if(!response.ok)throw new Error("Configuration page registration failed: "+response.status+" "+await response.text());
-    }
     function normalizeTable(t){return {...t,displayName:label(t.DisplayName)||t.SchemaName||t.LogicalName,description:label(t.Description),custom:!!bool(t.IsCustomEntity),managed:!!bool(t.IsManaged)}}
     const guid=value=>String(value||"").replace(/[{}]/g,"").toLowerCase();
     const isDefaultSolution=s=>["default","active"].includes((s.uniquename||"").toLowerCase())||/(^|\s)(default solution|active solution)(\s|$)/i.test(s.friendlyname||"");
@@ -205,7 +198,7 @@
       el("tableReportButton").disabled=false;el("exportCsvButton").disabled=false;el("exportJsonButton").disabled=false;el("printButton").onclick=()=>openReportModal("table");
     }
     function columnsGrid(rows){return `<table class="grid"><thead><tr><th>Display name</th><th>Logical name</th><th>Type</th><th>Required</th><th>Details</th></tr></thead><tbody>${rows.map(a=>`<tr><td><b>${enc(a.displayName)}</b>${a.custom?'<span class="badge custom">Custom</span>':''}<div class="muted">${enc(a.description)}</div></td><td>${enc(a.LogicalName)}<div class="muted">${enc(a.SchemaName)}</div></td><td>${enc(a.type)}</td><td>${enc(a.required)}</td><td>${enc(columnDetails(a))}</td></tr>`).join("")}</tbody></table>`}
-    function columnDetails(a){const bits=[];if(a.IsPrimaryId)bits.push("Primary ID");if(a.IsPrimaryName)bits.push("Primary name");if(a.MaxLength!=null)bits.push("Max "+a.MaxLength);if(a.Precision!=null)bits.push("Precision "+a.Precision);if(a.Targets&&a.Targets.length)bits.push("Targets: "+a.Targets.join(", "));return bits.join(" · ")||"—"}
+    function columnDetails(a){const bits=[];if(a.IsPrimaryId)bits.push("Primary ID");if(a.IsPrimaryName)bits.push("Primary name");if(a.Targets&&a.Targets.length)bits.push("Targets: "+a.Targets.join(", "));return bits.join(" · ")||"—"}
     function relationshipsGrid(rows){return `<table class="grid"><thead><tr><th>Schema name</th><th>Type</th><th>From</th><th>Column</th><th>To</th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${enc(r.SchemaName)}</b>${bool(r.IsCustomRelationship)?'<span class="badge custom">Custom</span>':''}</td><td>${enc(r.direction)}</td><td>${enc(r.ReferencingEntity||"—")}</td><td>${enc(r.ReferencingAttribute||r.IntersectEntityName||"—")}</td><td>${enc(r.ReferencedEntity||"—")}</td></tr>`).join("")||'<tr><td colspan="5" class="muted">No relationships returned.</td></tr>'}</tbody></table>`}
     function showError(error){console.error(error);setStatus("Unable to read metadata","error");el("detail").innerHTML=`<div class="error-box"><b>Metadata request failed</b><br>${enc(error.message)}<br><br>Open this report inside the target Dynamics 365/Power Apps environment and ensure your security role can read customizations.</div>`}
     function csvCell(value){const s=String(value??"");return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
@@ -237,7 +230,7 @@
     el("detail").addEventListener("click",e=>{const tab=e.target.closest("[data-tab]");if(tab){state.tab=tab.dataset.tab;renderDetail()}});
     el("refreshButton").onclick=()=>{state.allTables=[];state.tables=[];state.solutions=[];state.componentCache.clear();state.details.clear();state.selected=null;loadTables().catch(showError)};el("exportCsvButton").onclick=exportCsv;el("exportJsonButton").onclick=exportJson;
     el("fullReportButton").onclick=()=>openReportModal("full");el("tableReportButton").onclick=()=>openReportModal("table");el("cancelReport").onclick=()=>el("reportModal").classList.add("hidden");el("startReport").onclick=()=>buildFullReport("html");el("startPdf").onclick=()=>buildFullReport("pdf");
-    ensureConfigurationPage().catch(error=>console.warn(error.message));loadTables().catch(showError);
+    loadTables().catch(showError);
   })();
   </script>
 </body>
